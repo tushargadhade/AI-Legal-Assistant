@@ -1,8 +1,8 @@
-// AI Legal Assistant Frontend Logic
-
 document.addEventListener('DOMContentLoaded', () => {
   checkSystemStatus();
   loadAllProcedures();
+  loadBnsMappings();
+  updateScorecardQuestions();
 });
 
 // Check API Health & Status
@@ -23,18 +23,72 @@ async function checkSystemStatus() {
 
 // Navigation Tab Switcher
 function switchTab(tabName) {
-  const tabs = ['qa', 'proc', 'simplify'];
+  const tabs = ['qa', 'bns', 'scorecard', 'proc', 'simplify'];
   tabs.forEach(t => {
     const content = document.getElementById(`tab-${t}`);
     const btn = document.getElementById(`tab-${t}-btn`);
-    if (t === tabName) {
-      content.classList.remove('hidden');
-      btn.classList.add('active');
-    } else {
-      content.classList.add('hidden');
-      btn.classList.remove('active');
+    if (content && btn) {
+      if (t === tabName) {
+        content.classList.remove('hidden');
+        btn.classList.add('active');
+      } else {
+        content.classList.add('hidden');
+        btn.classList.remove('active');
+      }
     }
   });
+}
+
+// Speech Recognition (Voice Dictation)
+function startVoiceInput() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Voice input is not supported in this browser. Please type your query.');
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-IN';
+  recognition.interimResults = false;
+
+  const btn = document.querySelector('button[onclick="startVoiceInput()"]');
+  btn.innerText = '🎙️ Listening...';
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('query-input').value = transcript;
+    btn.innerText = '🎙️ Speak';
+    runQuery(transcript);
+  };
+
+  recognition.onerror = () => {
+    btn.innerText = '🎙️ Speak';
+  };
+
+  recognition.onend = () => {
+    btn.innerText = '🎙️ Speak';
+  };
+
+  recognition.start();
+}
+
+// Speech Synthesis (Audio Readout)
+function readSummaryAudio() {
+  const summaryOutput = document.getElementById('summary-output');
+  if (!summaryOutput || !summaryOutput.innerText.trim()) {
+    alert('No summary text to read.');
+    return;
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); // Stop ongoing
+    const cleanText = summaryOutput.innerText.replace(/[*#>`]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert('Text-to-speech audio is not supported in this browser.');
+  }
 }
 
 // Quick Prompt Setters
@@ -260,6 +314,120 @@ function formatMarkdown(text) {
   // Clean double nested lists
   html = html.replace(/<\/ul>\s*<ul>/g, '');
   return html;
+}
+
+// BNS Section Converter Logic
+async function loadBnsMappings(query = '') {
+  const container = document.getElementById('bns-mapping-results');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`/api/bns-mapper?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    const mappings = data.mappings || [];
+
+    if (mappings.length === 0) {
+      container.innerHTML = `<p style="color:var(--text-muted); padding:1rem;">No matching section mapping found.</p>`;
+      return;
+    }
+
+    container.innerHTML = mappings.map(m => `
+      <div style="background:rgba(7,13,13,0.7); border:1px solid var(--border-color); border-radius:12px; padding:1rem; margin-bottom:0.85rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+          <span style="color:#ef4444; font-weight:700; font-size:0.9rem; background:rgba(239,68,68,0.15); padding:0.15rem 0.5rem; border-radius:6px;">Old: ${escapeHtml(m.old)}</span>
+          <span style="color:var(--text-emerald); font-weight:700; font-size:0.9rem; background:rgba(16,185,129,0.15); padding:0.15rem 0.5rem; border-radius:6px;">New: ${escapeHtml(m.new)}</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">${escapeHtml(m.notes)}</p>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<p style="color:#ef4444;">Failed to load BNS mappings.</p>`;
+  }
+}
+
+function handleBnsSearch() {
+  const q = document.getElementById('bns-search-input').value.trim();
+  loadBnsMappings(q);
+}
+
+// Action Readiness Scorecard Logic
+function updateScorecardQuestions() {
+  const type = document.getElementById('scorecard-type').value;
+  const area = document.getElementById('scorecard-questions-area');
+  if (!area) return;
+
+  if (type === 'cyber_fraud') {
+    area.innerHTML = `
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.9rem; margin-bottom:0.3rem;">Hours elapsed since transaction:</label>
+        <input type="number" id="sc-time" value="2" style="width:100%; padding:0.5rem; background:var(--bg-dark); color:white; border:1px solid var(--border-color); border-radius:8px;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <label><input type="checkbox" id="sc-1930" checked /> Called 1930 National Cyber Crime Helpline</label>
+        <label><input type="checkbox" id="sc-bank" checked /> Notified Bank to freeze cards/account</label>
+        <label><input type="checkbox" id="sc-proof" checked /> Have SMS & Transaction ID proof</label>
+      </div>
+    `;
+  } else if (type === 'consumer') {
+    area.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <label><input type="checkbox" id="sc-invoice" checked /> Have Tax Invoice / Receipt</label>
+        <label><input type="checkbox" id="sc-notice" /> Sent 15-day written notice to seller</label>
+        <label><input type="checkbox" id="sc-2years" checked /> Purchase within last 2 years</label>
+      </div>
+    `;
+  } else {
+    area.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <label><input type="checkbox" id="sc-dept" checked /> Identified exact Ministry / Public Authority</label>
+        <label><input type="checkbox" id="sc-questions" checked /> Formulated specific questions (file status/certified copy)</label>
+        <label><input type="checkbox" id="sc-bpl" /> Belongs to BPL cardholder family (Free fee)</label>
+      </div>
+    `;
+  }
+}
+
+async function calculateScorecard() {
+  const type = document.getElementById('scorecard-type').value;
+  let answers = {};
+
+  if (type === 'cyber_fraud') {
+    answers = {
+      time_elapsed_hours: parseFloat(document.getElementById('sc-time').value || 24),
+      called_1930: document.getElementById('sc-1930').checked,
+      notified_bank: document.getElementById('sc-bank').checked,
+      has_txn_proof: document.getElementById('sc-proof').checked
+    };
+  } else if (type === 'consumer') {
+    answers = {
+      has_invoice: document.getElementById('sc-invoice').checked,
+      notice_sent: document.getElementById('sc-notice').checked,
+      within_2_years: document.getElementById('sc-2years').checked
+    };
+  } else {
+    answers = {
+      knows_department: document.getElementById('sc-dept').checked,
+      has_specific_questions: document.getElementById('sc-questions').checked,
+      is_bpl: document.getElementById('sc-bpl').checked
+    };
+  }
+
+  try {
+    const res = await fetch('/api/scorecard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scenario_type: type, answers: answers })
+    });
+    const data = await res.json();
+
+    const box = document.getElementById('scorecard-result-box');
+    box.classList.remove('hidden');
+    document.getElementById('score-display-number').innerText = `Empowerment Score: ${data.score}%`;
+    document.getElementById('score-display-level').innerText = `Status: ${data.readiness_level}`;
+    document.getElementById('score-display-factors').innerHTML = data.factors.map(f => `<p style="margin-bottom:0.3rem;">${escapeHtml(f)}</p>`).join('');
+  } catch (err) {
+    alert('Calculation failed.');
+  }
 }
 
 // Helper to escape HTML characters

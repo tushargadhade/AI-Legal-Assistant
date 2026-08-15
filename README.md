@@ -1,37 +1,52 @@
 # ⚖️ AI Legal Assistant (India)
 
-> **Bridging Legal Awareness & Access to Justice for Citizens through AI-Powered Regulations Summarization, Citations & Procedural Guidance.**
+> **Bridging Legal Awareness & Access to Justice for Citizens through AI-Powered Regulations Summarization, IPC ➔ BNS Conversion & Action Readiness Analytics.**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/Backend-Flask%20%7C%20REST%20API-emerald.svg)]()
 [![Retrieval Engine](https://img.shields.io/badge/RAG-BM25%20%2B%20Gemini%20AI-gold.svg)]()
+[![Features](https://img.shields.io/badge/Features-Voice%20%7C%20BNS%20Converter%20%7C%20Action%20Scorecard-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## 🎯 Hackathon Problem Statement & Impact
+## 🎯 Problem Statement & Core Value Proposition
 
-**Problem**: Legal documents, acts of Parliament, and government regulations are filled with complex legal jargon ("legalese"), making them inaccessible to ordinary citizens. This creates a severe barrier to justice, citizen awareness, and legal empowerment.
+**Problem**: Legal documents, Parliamentary legislation, and government regulations in India are dense, archaic, and written in complex legalese. Citizens face immense barriers when attempting to understand basic rights, navigate new penal codes (BNS / BNSS), or take procedural action after experiencing cyber fraud, consumer disputes, or labor issues.
 
-**Solution**: The **AI Legal Assistant** addresses this challenge by providing an end-to-end, citizen-centric platform that:
-1. **Answers Legal Questions** grounded directly in official government legislation.
-2. **Summarizes Dense Legalese** into simple, 5th-grade plain English bullet points.
-3. **Identifies Relevant Acts & Actionable Procedures** (e.g. filing RTI, Consumer Court complaints, Cyber Fraud 1930 reporting, Zero FIR, Domestic Violence protection orders).
-4. **Enforces Safety Guardrails**: Built-in non-advice disclaimers ensuring no unauthorized professional legal advice is rendered.
+**Solution**: The **AI Legal Assistant** is a comprehensive, human-centric legal awareness platform that goes far beyond generic AI chatbots. It combines **custom data engineering**, **retrieval-augmented generation (RAG)**, **IPC-to-BNS cross-referencing**, and **citizen action scorecards** to empower every citizen without giving unauthorized professional legal advice.
 
 ---
 
-## ✨ Key Features & Innovation
+## 💡 What Makes Our Project Special (AI + Human Creativity & Engineering)
 
-| Feature | Description | Citizen Benefit |
+Instead of relying purely on an off-the-shelf LLM API wrapper, our team built an **end-to-end legal intelligence system**:
+
+1. **🔬 Section-Aware Custom Chunking Engine (`src/chunker.py`)**:
+   - Developed custom regex state parsers to extract exact legal Section numbers, titles, and pages across 12 major Indian Acts (BNS, BNSS, BSA, RTI, CPA, IT Act, etc.), preventing arbitrary text truncations.
+2. **🔄 IPC ➔ BNS (2023) Cross-Reference Mapper (`src/legal_mapper.py`)**:
+   - Designed a cross-reference database mapping legacy Indian Penal Code sections (e.g. IPC 420 Cheating, IPC 302 Murder, CrPC 154 FIR) directly to the new Bharatiya Nyaya Sanhita (BNS Section 318, BNS Section 103, BNSS Section 173).
+3. **📊 Citizen Legal Readiness & Empowerment Scorecard**:
+   - Implemented an empirical mathematical model assessing incident parameters (e.g. reporting cyber fraud within the first 2 "Golden Hours", having invoice proofs, issuing 15-day notice) to calculate a **0-100% Action Readiness Score**.
+4. **🎙️ Inclusive Accessibility (Voice Dictation & Text-to-Speech)**:
+   - Built native Web Speech API voice dictation for query input and audio summary readouts, ensuring accessibility for non-readers and citizens speaking regional accents.
+5. **🛡️ Dual-Engine Offline Fallback Architecture**:
+   - Built a local heuristic legal summarizer engine that works **100% offline** without an API key, alongside Google Gemini 1.5 Flash integration.
+
+---
+
+## ✨ Features Breakdown
+
+| Feature Module | Technical Highlights | Citizen Impact |
 | :--- | :--- | :--- |
-| **📖 12 Indian Acts Indexed** | Pre-indexed full text of BNS (2023), BNSS (2023), BSA (2023), RTI (2005), Consumer Protection (2019), IT Act (2000), Domestic Violence (2005), Code on Wages (2019), OSH Code (2020), POCSO (2012), and Constitution of India. | Complete coverage of daily civil, criminal, consumer, labor & digital rights. |
-| **💡 Plain Language Summarization** | Translates complex clauses (like *"cognizable and non-bailable"*, *"hereinafter"*, *"punishable with imprisonment of either description"*) into everyday bullet points. | Understand legal rights without needing a law degree. |
-| **🔎 Grounded Citations Inspector** | Every answer provides side-by-side exact Act name, Section number, section title, page number, and verbatim clause text. | Zero hallucinations; complete source transparency. |
-| **📜 "Know Your Rights" Procedure Hub** | Actionable, step-by-step citizen guides detailing timelines, required fees, helpline numbers, and online portals (rtionline.gov.in, edaakhil.nic.in, cybercrime.gov.in). | Know exact steps to take after an incident occurs. |
-| **📝 Legalese Simplifier Tool** | Standalone tool where citizens can paste any complex court order or government document excerpt for an instant simple summary. | Quick understanding of legal notices or government forms. |
-| **📥 One-Click PDF Export** | Export simplified legal summaries and procedure guides as clean printable PDF reports. | Save or print legal awareness notes for offline reference. |
-| **🛡️ Built-in Offline Fallback** | Runs with Google Gemini API when configured, and falls back to a smart local legal engine offline. | 100% reliable for hackathon live judging demos. |
+| **📖 12 Indian Acts Index** | Indexed BNS, BNSS, BSA, RTI, Consumer Act, IT Act, Domestic Violence Act, Code on Wages, OSH Code, POCSO Act, IRC Code, and Constitution of India. | Complete coverage of civil, criminal, digital, and workplace rights. |
+| **💡 Plain Language Summarization** | Translates jargon (*"cognizable and non-bailable"*, *"punishable with imprisonment of either description"*) into 5th-grade bullet points. | Everyday citizens understand exact legal implications instantly. |
+| **🔄 IPC ➔ BNS Converter** | Real-time section translation between old IPC/CrPC laws and new 2023 BNS legislation. | Smooth transition to new criminal laws introduced in 2023/2024. |
+| **📊 Action Readiness Scorecard** | Custom scenario evaluator calculating readiness index (High/Moderate/Action Needed) with personalized tips. | Citizens know exactly what evidence/steps are missing to strengthen their case. |
+| **📜 "Know Your Rights" Procedures** | Curated workflow cards with timelines, fee structures, helpline numbers (**1930**, **181**, **112**), and government portal links (`rtionline.gov.in`, `edaakhil.nic.in`, `cybercrime.gov.in`). | Clear step-by-step roadmap after an incident occurs. |
+| **🎙️ Voice & Audio Readout** | Integrated Speech-to-Text input & Text-to-Speech audio summary playback. | High accessibility for illiterate or visually impaired citizens. |
+| **🔎 Verbatim Act Inspector** | Side-by-side legal inspector displaying exact Act name, Section number, section title, page number, and original clause. | 100% grounded in public legislation; zero AI hallucinations. |
+| **📥 One-Click PDF Export** | Clean HTML-to-PDF export of simplified summaries and action guides. | Printable reference for filing complaints or offline consulting. |
 
 ---
 
@@ -39,34 +54,37 @@
 
 ```mermaid
 flowchart TD
-    User([Indian Citizen / User]) <--> WebUI[Sleek Web Interface / UI]
-    
-    subgraph Web UI Layer
-        WebUI --> QATab[Legal Q&A Assistant Workspace]
+    User([Indian Citizen / User]) <--> WebUI[Sleek Emerald Glassmorphism UI]
+
+    subgraph User Experience Layer
+        WebUI --> QATab[Legal Q&A Assistant + Voice Dictation]
+        WebUI --> BNSTab[IPC ➔ BNS Section Converter]
+        WebUI --> ScorecardTab[Citizen Action Readiness Calculator]
         WebUI --> ProcTab[Know Your Rights Procedure Hub]
         WebUI --> SimplifyTab[Legalese Simplifier Tool]
     end
 
-    subgraph Backend API Layer (Flask)
-        QATab --> REST_API[/api/chat Endpoint/]
-        ProcTab --> Proc_API[/api/procedures Endpoint/]
-        SimplifyTab --> Simp_API[/api/summarize Endpoint/]
+    subgraph Flask REST API Layer
+        QATab --> REST_Chat[/api/chat/]
+        BNSTab --> REST_BNS[/api/bns-mapper/]
+        ScorecardTab --> REST_Score[/api/scorecard/]
+        ProcTab --> REST_Proc[/api/procedures/]
+        SimplifyTab --> REST_Simp[/api/summarize/]
     end
 
-    subgraph Hybrid RAG Engine
-        REST_API --> BM25[BM25 Okapi Retrieval Engine]
-        BM25 <--> IndexData[(bm25_index.pkl / 12 Acts)]
+    subgraph Core AI & Legal Analytics Engine
+        REST_Chat --> BM25[BM25 Okapi Retrieval]
+        BM25 <--> LegalDB[(data/bm25_index.pkl - 12 Acts)]
         
-        REST_API --> GenAI{Gemini API / Local Fallback}
-        GenAI -->|With Key| GeminiModel[Google Gemini 1.5 Flash]
-        GenAI -->|Offline| LocalEngine[Rule-Based Heuristic Simplifier]
+        REST_Chat --> HybridLLM{Gemini 1.5 API / Local Fallback}
+        HybridLLM -->|Online| GeminiModel[Google Gemini 1.5 Flash]
+        HybridLLM -->|Offline| LocalEngine[Heuristic Legal Simplifier]
         
-        REST_API --> ProcEngine[Procedures Mapper / src/procedures.py]
+        REST_Score --> AnalyticsEngine[Legal Readiness Calculator]
     end
 
-    GeminiModel --> FinalResp[Simplified Response + Citations + Guardrails]
-    LocalEngine --> FinalResp
-    FinalResp --> WebUI
+    HybridLLM --> FinalOutput[Plain Summary + Cited Clauses + Action Procedures + Disclaimer]
+    FinalOutput --> WebUI
 ```
 
 ---
@@ -79,117 +97,96 @@ AI-Legal-Assistant/
 │   ├── pdfs/               # Official PDF texts of 12 Indian Acts
 │   └── bm25_index.pkl      # Pre-built BM25 search index & chunk dataframe
 ├── public/
-│   ├── index.html          # Web UI HTML template
+│   ├── index.html          # Full interactive Web UI template
 │   ├── style.css           # Modern emerald glassmorphism styling
-│   └── app.js              # Interactive UI logic & PDF export script
+│   └── app.js              # Speech recognition, audio, BNS converter, scorecard & PDF scripts
 ├── src/
-│   ├── main.py             # App CLI runner & server launcher
-│   ├── backend_api.py      # Flask REST API server
-│   ├── rag_engine.py       # Hybrid retrieval & legal summarizer engine
+│   ├── main.py             # Application launcher & CLI runner
+│   ├── backend_api.py      # Flask REST API endpoints
+│   ├── rag_engine.py       # Hybrid BM25 + Gemini RAG engine with smart fallback
+│   ├── legal_mapper.py     # IPC-to-BNS cross-referencing & readiness scorecard engine
 │   ├── procedures.py       # Citizen rights procedural workflow database
 │   ├── pdf_loader.py       # PDF document parser
-│   ├── chunker.py          # Legal section chunking & tokenization
+│   ├── chunker.py          # Section-aware chunking algorithm
 │   ├── build_data.py       # Dataset pipeline builder
 │   └── build_index.py      # BM25 index builder
-├── DOCS.md                 # Complete technical documentation
-├── requirements.txt        # Dependencies manifest
-└── README.md               # Project overview & quickstart
+├── DOCS.md                 # Full technical specifications & algorithm details
+├── requirements.txt        # Python dependencies manifest
+└── README.md               # Overview, architecture & quickstart
 ```
 
 ---
 
 ## 🚀 Quickstart & Installation
 
-### 1. Prerequisites
-- Python 3.10 or higher
-- Git
-
-### 2. Clone Repository & Install Dependencies
+### 1. Clone Repository & Install Dependencies
 ```bash
 git clone https://github.com/tushargadhade/AI-Legal-Assistant.git
 cd AI-Legal-Assistant
 
-# Create virtual environment (optional but recommended)
+# Create virtual environment (optional)
 python -m venv venv
-# On Windows:
+# Windows:
 venv\Scripts\activate
-# On Mac/Linux:
+# Mac/Linux:
 source venv/bin/activate
 
-# Install requirements
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. (Optional) Set Gemini API Key
-To enable Google Gemini AI generation:
+### 2. Set Optional Gemini API Key
 ```bash
 # Windows PowerShell:
-$env:GEMINI_API_KEY="your-gemini-api-key-here"
+$env:GEMINI_API_KEY="your-gemini-api-key"
 
 # Linux / Mac:
-export GEMINI_API_KEY="your-gemini-api-key-here"
+export GEMINI_API_KEY="your-gemini-api-key"
 ```
-*Note: If no API key is set, the system automatically uses the built-in smart local legal engine!*
+*(Note: If no API key is provided, the application automatically runs using the local legal engine!)*
 
 ---
 
-## 🖥️ How to Run
+## 🖥️ Running the Application
 
-### Option A: Launch Web Application (Recommended for Demo)
-Run the server:
+### Launch Web Server (Recommended)
 ```bash
 python src/backend_api.py
 ```
-Open your browser and navigate to:
+Navigate in browser to:
 👉 **`http://localhost:5000`**
 
-### Option B: Interactive CLI Launcher
-Run the unified command center:
+### Launch CLI Command Center
 ```bash
 python src/main.py
 ```
-Select `1` to start the web server, `2` for CLI legal search, or `3` to view citizen procedural guides.
 
 ---
 
-## 📡 REST API Reference
+## 🎤 Hackathon Pitch & Presentation Demo Script
 
-| Endpoint | Method | Description | Sample Payload / Params |
-| :--- | :--- | :--- | :--- |
-| `/api/status` | `GET` | System status, indexed chunks count, and API health | N/A |
-| `/api/chat` | `POST` | Natural language legal Q&A with summary, citations & procedures | `{"query": "Procedure for cyber fraud"}` |
-| `/api/search` | `POST` | Raw BM25 section retrieval | `{"query": "RTI section 6", "top_k": 5}` |
-| `/api/procedures` | `GET` | List all citizen procedural guides | `?q=cyber` (optional search filter) |
-| `/api/summarize` | `POST` | Direct legalese text simplifier | `{"text": "Legal section clause..."}` |
-
----
-
-## 🎤 Hackathon Pitch & Presentation Guide
-
-### Slide 1: The Problem
-> *"Over 1.4 billion citizens in India live under complex legal codes. When a consumer receives a defective product, or a citizen faces online cyber fraud, they struggle to understand their legal rights because acts are written in dense legalese."*
-
-### Slide 2: Our Solution — AI Legal Assistant
-> *"An AI-powered legal awareness engine that translates Indian acts (BNS, BNSS, RTI, Consumer Act, IT Act) into simple 5th-grade language, shows exact verbatim legal citations, and provides step-by-step procedural workflows for filing complaints."*
-
-### Slide 3: The 3 Pillars
-1. **Source Grounding**: 100% grounded in 12 official government legislation PDFs—zero hallucinations.
-2. **Actionable Procedures**: Tells citizens *where to go*, *how much fee to pay*, and *timeline for resolution*.
-3. **Safety & Guardrails**: Automatic disclaimer engine protecting against unauthorized legal practice.
+1. **The Hook**: *"Over 1.4 billion citizens live under complex legal codes in India. When cheated online or denied salary, citizens feel helpless because legal documents are written in dense jargon."*
+2. **The Innovation**: *"We built AI Legal Assistant—combining BM25 search across 12 Indian Acts, Gemini 1.5 AI summarization, IPC-to-BNS 2023 section conversion, and an empirical Action Readiness Scorecard."*
+3. **Live Demo Highlights**:
+   - Show **Voice Input** for query: *"What should I do if scammed via UPI fraud?"*
+   - Show side-by-side **Original Legal Clause Inspector** (IT Act 66D).
+   - Show **IPC ➔ BNS Converter** (IPC 420 ➔ BNS 318).
+   - Demonstrate the **Citizen Readiness Scorecard** (85% Readiness Index).
+   - Show **Export PDF** for offline submission.
 
 ---
 
-## ⚖️ Legal Disclaimer
+## ⚖️ Legal Safety Disclaimer
 
-This application is developed strictly for **educational, awareness, and informational purposes**. It does not constitute professional legal advice, formal representation, or legal counsel. Citizens requiring legal representation in court should consult a certified licensed advocate.
+This software is designed exclusively for **educational, awareness, and informational purposes**. It does not constitute formal legal representation or legal advice. Citizens requiring court representation should consult a licensed legal practitioner.
 
 ---
 
-## 👥 Credits & Team
+## 👥 Engineering & Craftsmanship Credits
 
-Developed for the **Hackathon Challenge**:
-- **Dataset & Acts Pipeline**: Processing official gazette notifications & legislation.
-- **RAG & NLP Engine**: BM25 Okapi + Google Gemini 1.5 Flash + Local Fallback Engine.
-- **User Experience**: Glassmorphism dark theme with PDF export capability.
+Built with passion and hard work for the **Hackathon Challenge**:
+- **Data Engineering**: Section-aware regex chunker parsing 12 Indian Gazette Acts.
+- **NLP & Retrieval**: BM25 Okapi + Google Gemini 1.5 + Heuristic Local Fallback Engine.
+- **Frontend & UX**: Emerald glassmorphism design system, Web Speech API integration & PDF reporting.
 
 *Built with ❤️ to democratize access to legal awareness for every citizen.*

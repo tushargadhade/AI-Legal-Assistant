@@ -24,6 +24,12 @@
       <button class="nav-tab active" id="tab-qa-btn" onclick="switchTab('qa')">
         🔍 Legal Assistant
       </button>
+      <button class="nav-tab" id="tab-bns-btn" onclick="switchTab('bns')">
+        🔄 IPC ➔ BNS Converter
+      </button>
+      <button class="nav-tab" id="tab-scorecard-btn" onclick="switchTab('scorecard')">
+        📊 Action Scorecard
+      </button>
       <button class="nav-tab" id="tab-proc-btn" onclick="switchTab('proc')">
         📜 Know Your Rights
       </button>
@@ -54,6 +60,9 @@
             <div class="search-box">
               <span class="search-icon">🔎</span>
               <input type="text" id="query-input" class="search-input" placeholder="e.g., What should I do if scammed via UPI fraud? How to file RTI?" required />
+              <button type="button" class="nav-tab" style="margin-right:0.4rem; padding:0.45rem 0.75rem;" onclick="startVoiceInput()" title="Click to speak your legal query">
+                🎙️ Speak
+              </button>
               <button type="submit" class="btn-primary" id="search-btn">
                 <span>Ask AI</span>
               </button>
@@ -97,9 +106,14 @@
                 💡 <span>Plain Language Legal Summary</span>
                 <span class="badge" id="ai-mode-badge">AI Engine</span>
               </div>
-              <button class="nav-tab" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="exportSummaryPDF()">
-                📥 Export PDF
-              </button>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="nav-tab" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="readSummaryAudio()">
+                  🔊 Audio Readout
+                </button>
+                <button class="nav-tab" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="exportSummaryPDF()">
+                  📥 Export PDF
+                </button>
+              </div>
             </div>
             
             <div id="loading-indicator" class="hidden" style="text-align:center; padding: 2rem;">
@@ -145,6 +159,62 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+
+    <!-- TAB: IPC to BNS CONVERTER -->
+    <div id="tab-bns" class="tab-content hidden">
+      <div class="hero-section" style="margin-bottom:1.5rem;">
+        <h1 class="hero-title">IPC ➔ BNS Section Cross-Reference Converter</h1>
+        <p class="hero-subtitle">
+          Search old Indian Penal Code (IPC) or CrPC section numbers to view their updated equivalent under Bharatiya Nyaya Sanhita (BNS, 2023) & BNSS.
+        </p>
+      </div>
+
+      <div class="glass-panel" style="max-width: 900px; margin: 0 auto;">
+        <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem;">
+          <input type="text" id="bns-search-input" class="search-input" style="background:rgba(0,0,0,0.5); padding:0.75rem 1rem; border-radius:10px; border:1px solid var(--border-color);" placeholder="Search old section (e.g. IPC 420, IPC 302, FIR 154)..." oninput="handleBnsSearch()" />
+        </div>
+        <div id="bns-mapping-results">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB: CITIZEN ACTION SCORECARD -->
+    <div id="tab-scorecard" class="tab-content hidden">
+      <div class="hero-section" style="margin-bottom:1.5rem;">
+        <h1 class="hero-title">Citizen Legal Readiness & Empowerment Scorecard</h1>
+        <p class="hero-subtitle">
+          Assess your legal recovery probability and action readiness index for Cyber Fraud, RTI, or Consumer Disputes.
+        </p>
+      </div>
+
+      <div class="glass-panel" style="max-width: 850px; margin: 0 auto;">
+        <div style="margin-bottom:1.25rem;">
+          <label style="display:block; font-weight:600; margin-bottom:0.5rem; color:var(--text-emerald);">Select Incident Category:</label>
+          <select id="scorecard-type" style="width:100%; padding:0.75rem; background:var(--bg-dark); color:var(--text-main); border:1px solid var(--border-color); border-radius:10px;" onchange="updateScorecardQuestions()">
+            <option value="cyber_fraud">🛡️ Online Cyber Fraud / Financial Scam</option>
+            <option value="consumer">🛍️ Defective Product / Consumer Dispute</option>
+            <option value="rti">📑 Right to Information (RTI) Application</option>
+          </select>
+        </div>
+
+        <div id="scorecard-questions-area" style="margin-bottom:1.5rem;">
+          <!-- Questions populated via JS -->
+        </div>
+
+        <button class="btn-primary" onclick="calculateScorecard()">
+          📊 Calculate Readiness Score
+        </button>
+
+        <div id="scorecard-result-box" class="hidden" style="margin-top:1.5rem; padding:1.25rem; background:rgba(16,185,129,0.08); border:1px solid var(--primary-emerald); border-radius:14px;">
+          <h3 style="color:var(--text-gold); font-size:1.3rem;" id="score-display-number">Score: 85%</h3>
+          <p style="font-weight:600; color:var(--text-emerald); margin-bottom:0.75rem;" id="score-display-level">High Readiness</p>
+          <div id="score-display-factors" style="font-size:0.9rem;"></div>
+        </div>
       </div>
     </div>
 

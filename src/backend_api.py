@@ -13,32 +13,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from rag_engine import process_user_query, retrieve_legal_chunks, generate_local_plain_summary, DISCLAIMER_TEXT
 from procedures import get_all_procedures, get_procedure_by_id, search_procedures
+from legal_mapper import lookup_ipc_bns, calculate_citizen_empowerment_score, IPC_BNS_MAP
 
-# Initialize Flask app
 PUBLIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public")
-app = Flask(__name__, static_folder=PUBLIC_DIR)
+app = Flask(__name__)
 CORS(app)
 
 
-# Static File Serving
-@app.route("/")
-def serve_index():
-    if os.path.exists(os.path.join(PUBLIC_DIR, "index.html")):
-        return send_from_directory(PUBLIC_DIR, "index.html")
-    return jsonify({
-        "message": "AI Legal Assistant API is running.",
-        "docs": "/api/status"
-    })
-
-
-@app.route("/<path:path>")
-def serve_static(path):
-    if os.path.exists(os.path.join(PUBLIC_DIR, path)):
-        return send_from_directory(PUBLIC_DIR, path)
-    return send_from_directory(PUBLIC_DIR, "index.html")
-
-
-# REST API Endpoints
+# 1. REST API Endpoints
 @app.route("/api/status", methods=["GET"])
 def get_status():
     index_exists = os.path.exists("data/bm25_index.pkl")
@@ -65,27 +47,21 @@ def get_status():
 
 @app.route("/api/chat", methods=["POST"])
 def chat_endpoint():
-    """Main Q&A endpoint: processes natural language question, returns simple summary, citations & procedures."""
     data = request.get_json(force=True, silent=True) or {}
     query = data.get("query", "").strip()
-
     if not query:
         return jsonify({"error": "Query field is required"}), 400
-
     result = process_user_query(query)
     return jsonify(result)
 
 
 @app.route("/api/search", methods=["POST"])
 def search_endpoint():
-    """Search legal sections using BM25."""
     data = request.get_json(force=True, silent=True) or {}
     query = data.get("query", "").strip()
     top_k = int(data.get("top_k", 5))
-
     if not query:
         return jsonify({"error": "Query field is required"}), 400
-
     results = retrieve_legal_chunks(query, top_k=top_k)
     return jsonify({
         "query": query,
@@ -97,7 +73,6 @@ def search_endpoint():
 
 @app.route("/api/procedures", methods=["GET"])
 def list_procedures():
-    """Get list of procedural guides."""
     q = request.args.get("q", "").strip()
     if q:
         procs = search_procedures(q)
@@ -111,23 +86,42 @@ def list_procedures():
 
 @app.route("/api/procedures/<proc_id>", methods=["GET"])
 def get_procedure_detail(proc_id):
-    """Get details for a single procedure."""
     proc = get_procedure_by_id(proc_id)
     if not proc:
         return jsonify({"error": "Procedure not found"}), 404
     return jsonify(proc)
 
 
+@app.route("/api/bns-mapper", methods=["GET"])
+def bns_mapper_endpoint():
+    q = request.args.get("q", "").strip()
+    if q:
+        matches = lookup_ipc_bns(q)
+    else:
+        matches = list(IPC_BNS_MAP.values())
+    return jsonify({
+        "query": q,
+        "count": len(matches),
+        "mappings": matches
+    })
+
+
+@app.route("/api/scorecard", methods=["POST"])
+def scorecard_endpoint():
+    data = request.get_json(force=True, silent=True) or {}
+    scenario_type = data.get("scenario_type", "cyber_fraud")
+    answers = data.get("answers", {})
+    result = calculate_citizen_empowerment_score(scenario_type, answers)
+    return jsonify(result)
+
+
 @app.route("/api/summarize", methods=["POST"])
 def summarize_text_endpoint():
-    """Direct legal text simplification endpoint."""
     data = request.get_json(force=True, silent=True) or {}
     text = data.get("text", "").strip()
-
     if not text:
         return jsonify({"error": "Text field is required"}), 400
 
-    # Wrap in chunk structure to reuse summarizer logic
     mock_chunk = [{
         "act_name": "Provided Legal Text",
         "act_short_name": "RAW TEXT",
@@ -137,13 +131,33 @@ def summarize_text_endpoint():
         "text": text,
         "score": 1.0
     }]
-
     summary = generate_local_plain_summary("Simplify this legal text", mock_chunk)
     return jsonify({
         "original_text": text,
         "simplified_summary": summary,
         "disclaimer": DISCLAIMER_TEXT
     })
+
+
+# 2. Explicit Static File Serving (No wildcard catch-alls)
+@app.route("/")
+def serve_index():
+    return send_from_directory(PUBLIC_DIR, "index.html")
+
+
+@app.route("/style.css")
+def serve_css():
+    return send_from_directory(PUBLIC_DIR, "style.css")
+
+
+@app.route("/app.js")
+def serve_js():
+    return send_from_directory(PUBLIC_DIR, "app.js")
+
+
+@app.route("/favicon.ico")
+def serve_favicon():
+    return "", 204
 
 
 def run_server(port=5000, host="0.0.0.0", debug=False):
