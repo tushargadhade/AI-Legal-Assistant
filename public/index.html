@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Legal Assistant - Indian Government Laws & Citizen Rights</title>
+  <meta name="description" content="AI legal assistant answering citizen questions using Indian laws (BNS, BNSS, RTI, Consumer Act, IT Act) with simplified language summaries and step-by-step procedures.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo-icon">⚖️</div>
+      <div class="logo-text">
+        <h1>AI Legal Assistant</h1>
+        <span>Government Laws & Citizen Awareness</span>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <button class="nav-tab active" id="tab-qa-btn" onclick="switchTab('qa')">
+        🔍 Legal Assistant
+      </button>
+      <button class="nav-tab" id="tab-proc-btn" onclick="switchTab('proc')">
+        📜 Know Your Rights
+      </button>
+      <button class="nav-tab" id="tab-simplify-btn" onclick="switchTab('simplify')">
+        📝 Legalese Simplifier
+      </button>
+
+      <div class="status-pill" id="system-status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">12 Acts Indexed</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- TAB 1: LEGAL Q&A ASSISTANT -->
+    <div id="tab-qa" class="tab-content">
+      <div class="hero-section">
+        <h1 class="hero-title">Legal Regulations Simplified for Citizens</h1>
+        <p class="hero-subtitle">
+          Ask questions about Indian laws, penal codes, labor rights, RTI, cyber financial fraud, or consumer remedies in simple plain English.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+          <form id="search-form" onsubmit="handleSearch(event)">
+            <div class="search-box">
+              <span class="search-icon">🔎</span>
+              <input type="text" id="query-input" class="search-input" placeholder="e.g., What should I do if scammed via UPI fraud? How to file RTI?" required />
+              <button type="submit" class="btn-primary" id="search-btn">
+                <span>Ask AI</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quick Prompts Chips -->
+        <div class="quick-prompts">
+          <div class="prompt-chip" onclick="setQuery('What is the procedure and helpline to report online cyber financial fraud?')">
+            🛡️ Cyber Scam & 1930 Helpline
+          </div>
+          <div class="prompt-chip" onclick="setQuery('How to file an RTI application online and what is the fee?')">
+            📑 RTI Application Procedure
+          </div>
+          <div class="prompt-chip" onclick="setQuery('What can I do if a seller refuses to replace a defective product?')">
+            🛍️ Consumer Refund & E-Daakhil
+          </div>
+          <div class="prompt-chip" onclick="setQuery('What is a Zero FIR under Bharatiya Nagarik Suraksha Sanhita (BNSS)?')">
+            ⚖️ Zero FIR Rights (BNSS 2023)
+          </div>
+          <div class="prompt-chip" onclick="setQuery('What protection orders can a woman get under Domestic Violence Act?')">
+            🤝 Domestic Violence Protection
+          </div>
+          <div class="prompt-chip" onclick="setQuery('When must an employer pay salary and how to recover unpaid wages?')">
+            💼 Unpaid Wages Recovery
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Workspace Grid -->
+      <div class="workspace-grid" id="results-area">
+
+        <!-- Left Column: AI Simplified Summary & Procedures -->
+        <div class="left-column">
+          
+          <!-- AI Plain Language Answer Card -->
+          <div class="glass-panel" id="summary-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                💡 <span>Plain Language Legal Summary</span>
+                <span class="badge" id="ai-mode-badge">AI Engine</span>
+              </div>
+              <button class="nav-tab" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="exportSummaryPDF()">
+                📥 Export PDF
+              </button>
+            </div>
+            
+            <div id="loading-indicator" class="hidden" style="text-align:center; padding: 2rem;">
+              <div class="loading-spinner"></div>
+              <p style="margin-top:0.75rem; color:var(--text-muted);">Analyzing 12 Indian Legal Acts & simplifying terms...</p>
+            </div>
+
+            <div id="summary-output" class="summary-content">
+              <p style="color: var(--text-muted); font-style: italic;">
+                Type a question or select a prompt above to receive a plain-language summary grounded in official Indian legal acts.
+              </p>
+            </div>
+          </div>
+
+          <!-- Actionable Citizen Procedure Cards -->
+          <div class="glass-panel" id="procedures-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                📌 <span>Recommended Citizen Action Procedures</span>
+              </div>
+            </div>
+            <div id="procedures-output">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Citations & Section Inspector -->
+        <div class="right-column">
+          <div class="glass-panel" style="position: sticky; top: 90px;">
+            <div class="panel-header">
+              <div class="panel-title">
+                📖 <span>Official Legal Act Inspector</span>
+                <span class="badge" id="citations-count-badge">0 Clauses Found</span>
+              </div>
+            </div>
+
+            <div id="citations-output">
+              <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Official Act sections, section titles, page numbers, and exact legal text snippets retrieved for your query will appear here.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 2: KNOW YOUR RIGHTS (PROCEDURES) -->
+    <div id="tab-proc" class="tab-content hidden">
+      <div class="hero-section" style="margin-bottom:1.5rem;">
+        <h1 class="hero-title">Citizen Rights & Procedural Workflows</h1>
+        <p class="hero-subtitle">
+          Step-by-step guides for filing RTI applications, lodging FIRs, Consumer court filings, Cyber Fraud recovery, and Domestic Violence safety orders.
+        </p>
+      </div>
+
+      <div id="all-procedures-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap:1.25rem;">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+
+
+    <!-- TAB 3: LEGALESE SIMPLIFIER -->
+    <div id="tab-simplify" class="tab-content hidden">
+      <div class="hero-section" style="margin-bottom:1.5rem;">
+        <h1 class="hero-title">Instant Legalese Simplifier</h1>
+        <p class="hero-subtitle">
+          Paste dense legal text, court order excerpt, or government clause to translate it into plain 5th-grade English.
+        </p>
+      </div>
+
+      <div class="glass-panel" style="max-width: 900px; margin: 0 auto;">
+        <label style="display:block; font-weight:600; margin-bottom:0.5rem; color:var(--text-emerald);">
+          Paste Legal Text / Section Excerpt:
+        </label>
+        <textarea id="raw-legal-text" class="textarea-custom" placeholder="e.g., Notwithstanding anything contained in subsection (1), whoever commits an offense specified under Section 66D shall be punishable with imprisonment of either description for a term which may extend to three years..."></textarea>
+        
+        <button class="btn-primary" onclick="handleDirectSimplification()">
+          ⚡ Simplify Text Now
+        </button>
+
+        <div id="simplifier-output-wrapper" class="hidden" style="margin-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:1rem;">
+          <h3 style="color:var(--text-gold); margin-bottom:0.5rem;">Simplified Breakdown:</h3>
+          <div id="simplifier-output" class="summary-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Disclaimer -->
+    <footer class="footer-disclaimer">
+      <strong>⚠️ Legal Awareness Disclaimer:</strong>
+      This AI Legal Assistant provides informational summaries using public government laws (BNS, BNSS, BSA, RTI Act, Consumer Protection Act, IT Act, etc.) for educational awareness. It does NOT provide professional legal advice or advocate representation. For formal legal matters, please consult a licensed advocate.
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

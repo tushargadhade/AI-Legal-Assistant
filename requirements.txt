@@ -2,3 +2,7 @@ pypdf
 pandas
 joblib
 rank_bm25
+flask
+flask-cors
+requests
+google-generativeai
