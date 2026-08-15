@@ -3,7 +3,6 @@ import joblib
 
 from rank_bm25 import BM25Okapi
 
-print("Hello World!!")
 CSV_PATH = "data/chunks.csv"
 INDEX_PATH = "data/bm25_index.pkl"
 
