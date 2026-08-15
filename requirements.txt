@@ -1,0 +1,4 @@
+pypdf
+pandas
+joblib
+rank_bm25

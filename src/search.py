@@ -58,9 +58,9 @@ def search(query, top_k=5):
         row = df.iloc[index]
 
         result = {
-            "act": row["act"],
+            "act": row["act_name"],
             "section": row["section"],
-            "title": row["title"],
+            "title": row["section_title"],
             "page": row["page"],
             "text": row["text"],
             "score": float(scores[index])

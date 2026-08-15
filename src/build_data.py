@@ -79,42 +79,40 @@ documents = [
     }
 ]
 
-all_chunks = []
+def build_data():
+    all_chunks = []
 
+    for document in documents:
 
-for document in documents:
+        print("\n======================================")
+        print("Processing:", document["name"])
+        print("======================================")
+
+        pages = load_pdf(document["file"])
+
+        print("Pages:", len(pages))
+
+        chunks = create_chunks(
+            pages,
+            document["name"],
+            document["short"]
+        )
+
+        print("Chunks:", len(chunks))
+
+        all_chunks.extend(chunks)
+
+    # Save using CSV
+    import pandas as pd
+    df = pd.DataFrame(all_chunks)
+    df.to_csv("data/chunks.csv", index=False)
 
     print("\n======================================")
-    print("Processing:", document["name"])
+    print("DONE")
     print("======================================")
 
-    pages = load_pdf(document["file"])
+    print("Total chunks:", len(all_chunks))
+    print("Saved to: data/chunks.csv")
 
-    print("Pages:", len(pages))
-
-    chunks = create_chunks(
-        pages,
-        document["name"],
-        document["short"]
-    )
-
-    print("Chunks:", len(chunks))
-
-    all_chunks.extend(chunks)
-
-
-# Save using Joblib
-
-joblib.dump(
-    all_chunks,
-    "data/chunks.joblib"
-)
-
-
-print("\n======================================")
-print("DONE")
-print("======================================")
-
-print("Total chunks:", len(all_chunks))
-
-print("Saved to: data/chunks.joblib")
+if __name__ == "__main__":
+    build_data()
